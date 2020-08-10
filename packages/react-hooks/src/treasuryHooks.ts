@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 
 import { Fixed18, convertToFixed18 } from '@acala-network/app-util';
 import { Balance } from '@acala-network/types/interfaces';
-import { StorageKey } from '@polkadot/types';
 
 import { useCall } from './useCall';
 import { CurrencyLike, WithNull } from './types';
+import { useApi } from './useApi';
+import { combineLatest } from 'rxjs';
+import { useConstants } from './useConstants';
 
 interface TreasuryOverview {
   debitPool: Fixed18;
@@ -17,23 +19,28 @@ interface TreasuryOverview {
 }
 
 export const useTreasuryOverview = (): WithNull<TreasuryOverview> => {
+  const { api } = useApi();
+  const { loanCurrencies } = useConstants();
   const _debitPool = useCall<Balance>('query.cdpTreasury.debitPool');
   const _surplusPool = useCall<Balance>('query.cdpTreasury.surplusPool');
-  const _totalCollaterals = useCall<[StorageKey, Balance][]>('query.cdpTreasury.totalCollaterals.entries');
   const [result, setResult] = useState<WithNull<TreasuryOverview>>(null);
 
   useEffect(() => {
-    setResult({
-      debitPool: convertToFixed18(_debitPool || 0),
-      surplusPool: convertToFixed18(_surplusPool || 0),
-      totalCollaterals: _totalCollaterals ? _totalCollaterals.map((item) => {
-        return {
-          balance: convertToFixed18(item[1] || 0),
-          currency: (item[0].toHuman() as string[])[0]
-        };
-      }) : []
+    const subscriber = combineLatest(loanCurrencies.map((currency) => api.query.cdpTreasury.totalCollaterals<Balance>(currency))).subscribe((result) => {
+      setResult({
+        debitPool: convertToFixed18(_debitPool || 0),
+        surplusPool: convertToFixed18(_surplusPool || 0),
+        totalCollaterals: result ? result.map((item, index) => {
+          return {
+            balance: convertToFixed18(item || 0),
+            currency: loanCurrencies[index]
+          };
+        }) : []
+      });
     });
-  }, [_debitPool, _surplusPool, _totalCollaterals]);
+
+    return (): void => subscriber.unsubscribe();
+  }, [_debitPool, _surplusPool, setResult, api.query.cdpTreasury, loanCurrencies]);
 
   return result;
 };

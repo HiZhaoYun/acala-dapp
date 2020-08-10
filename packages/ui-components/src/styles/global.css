@@ -51,3 +51,17 @@ p, span {
   --screen-middle: 1440px;
   --screen-large: 1920px;
 }
+
+/* overwrite ant style */
+.ant-steps-item-process .ant-steps-item-icon {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.ant-steps-item-finish .ant-steps-item-icon {
+  border-color: var(--color-primary);
+}
+
+.ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+  color: var(--color-primary);
+}

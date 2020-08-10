@@ -30,7 +30,7 @@ const Price: FC = () => {
           currency: liquidCurrency
         }
       ]}
-      pairSymbol='='
+      pairSymbol='≈'
     />
   );
 };

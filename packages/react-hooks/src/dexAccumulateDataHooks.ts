@@ -27,7 +27,10 @@ interface HooksReturnType {
   token: CurrencyLike;
 }
 
-export const useDexTotalReward = (): HooksReturnType => {
+/**
+ * @description get active user total reward from dex
+ */
+export const useDexTotalUserReward = (): HooksReturnType => {
   const { api } = useApi();
   const { active } = useAccounts();
   const { dexCurrencies, stableCurrency } = useConstants();
@@ -74,6 +77,9 @@ export const useDexTotalReward = (): HooksReturnType => {
   };
 };
 
+/**
+ * @description get all system reward from dex
+ */
 export const useDexTotalSystemReward = (): HooksReturnType => {
   const { api } = useApi();
   const { dexCurrencies, stableCurrency } = useConstants();
@@ -116,7 +122,7 @@ interface HooksReturnType {
   token: CurrencyLike;
 }
 
-export const useDexTotalDeposit = (): HooksReturnType => {
+export const useDexTotalUserDeposit = (): HooksReturnType => {
   const { api } = useApi();
   const { active } = useAccounts();
   const { dexCurrencies, stableCurrency } = useConstants();

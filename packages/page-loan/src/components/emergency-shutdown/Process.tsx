@@ -5,6 +5,7 @@ import classes from './Process.module.scss';
 import { EmergencyShutdownContext } from './EmergencyShutdownProvider';
 
 const CAN_REFUND_COUNT = 5;
+const ACALA_PULSE = 'https://pulse.acala.network/treasury';
 
 export const Process: FC = () => {
   const { setCanReclaim } = useContext(EmergencyShutdownContext);
@@ -41,8 +42,19 @@ export const Process: FC = () => {
       <Progress
         className={classes.bar}
         percent={count / 5 * 100}
+        strokeColor={{
+          '0%': '#DF008E',
+          '100%': '#FF4E4E',
+          '80%': '#F33067'
+        }}
         type='circle'
       />
+      <p className={classes.link}>
+        See more details on <a href={ACALA_PULSE}
+          rel='noopener noreferrer'
+          target='_blank'
+        >Acala Pulse</a>
+      </p>
     </div>
   );
 };

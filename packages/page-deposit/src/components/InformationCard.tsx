@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react';
 
 import { convertToFixed18 } from '@acala-network/app-util';
 
-import { useDexTotalReward, useDexTotalDeposit, useDexTotalSystemReward } from '@acala-dapp/react-hooks';
+import { useDexTotalUserReward, useDexTotalUserDeposit, useDexTotalSystemReward } from '@acala-dapp/react-hooks';
 import { Card } from '@acala-dapp/ui-components';
 import { FormatBalance, FormatRatio } from '@acala-dapp/react-components';
 
@@ -49,8 +49,8 @@ export const SystemCard: FC = () => {
 };
 
 export const UserCard: FC = () => {
-  const totalRewawrd = useDexTotalReward();
-  const totalDeposit = useDexTotalDeposit();
+  const totalRewawrd = useDexTotalUserReward();
+  const totalDeposit = useDexTotalUserDeposit();
 
   return (
     <Card

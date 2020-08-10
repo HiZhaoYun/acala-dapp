@@ -9,14 +9,12 @@ import { EmergencyShutdownContext, StepRoute } from './EmergencyShutdownProvider
 import { ReclaimModal } from './ReclaimModal';
 
 export const Controller: FC = () => {
-  const { canReclaim, setStep, step } = useContext(EmergencyShutdownContext);
+  const { canReclaim, reclaimBalanceIsEmpty, setStep, step } = useContext(EmergencyShutdownContext);
   const { close: closeReclaimModal, open: openReclaimModal, status } = useModal();
 
-  const hasPrevious = useMemo(() => {
-    return step !== 'trigger';
-  }, [step]);
-
   const handlePrevious = useCallback(() => {
+    if (step === 'success') return false;
+
     const currentIndex = StepRoute.findIndex((i) => i === step);
 
     if (currentIndex >= 0 && currentIndex < StepRoute.length) {
@@ -25,6 +23,8 @@ export const Controller: FC = () => {
   }, [setStep, step]);
 
   const handleNext = useCallback(() => {
+    if (step === 'success') return false;
+
     const currentIndex = StepRoute.findIndex((i) => i === step);
 
     if (currentIndex >= 0 && currentIndex < StepRoute.length - 1) {
@@ -32,13 +32,29 @@ export const Controller: FC = () => {
     }
   }, [setStep, step]);
 
+  const handleDone = useCallback(() => {
+    setStep('trigger');
+  }, [setStep]);
+
+  const hasPrevious = useMemo(() => {
+    if (step === 'success') return false;
+
+    return step !== 'trigger';
+  }, [step]);
+
   const hasNext = useMemo<boolean>(() => {
+    if (step === 'trigger') {
+      return !reclaimBalanceIsEmpty;
+    }
+
     if (step === 'process') return canReclaim;
 
     if (step === 'reclaim') return false;
 
+    if (step === 'success') return false;
+
     return true;
-  }, [canReclaim, step]);
+  }, [canReclaim, step, reclaimBalanceIsEmpty]);
 
   const hasReclaim = useMemo<boolean>(() => {
     if (step === 'reclaim') return true;
@@ -46,8 +62,13 @@ export const Controller: FC = () => {
     return false;
   }, [step]);
 
-  // if step is success, don't display controll component
-  if (step === 'success') {
+  const hasDone = useMemo<boolean>(() => {
+    if (step === 'success') return true;
+
+    return false;
+  }, [step]);
+
+  if (reclaimBalanceIsEmpty && step !== 'success') {
     return null;
   }
 
@@ -83,6 +104,17 @@ export const Controller: FC = () => {
           type='normal'
         >
           Reclaim
+        </Button> : null
+      }
+      {
+        hasDone ? <Button
+          className={classes.next}
+          color='primary'
+          onClick={handleDone}
+          size='large'
+          type='normal'
+        >
+          Done
         </Button> : null
       }
       <ReclaimModal

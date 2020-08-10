@@ -22,7 +22,9 @@
   text-align: center;
 
   @include media-breakpoint-up('md') {
-    display: none;
+    width: 68px;
+    height: 68px;
+    margin: 0;
   }
 }
 

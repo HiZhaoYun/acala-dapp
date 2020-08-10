@@ -135,8 +135,6 @@ export const RedeemConsole: FC = () => {
     return _params;
   };
 
-  console.log(form.errors);
-
   return (
     <Grid
       className={classes.root}
@@ -227,6 +225,17 @@ export const RedeemConsole: FC = () => {
                 <FormatBalance
                   balance={form.values.amount || 0}
                   currency={stakingPool.liquidCurrency}
+                />
+              </Condition>
+            }
+          />
+          <List.Item
+            label='Received'
+            value={
+              <Condition condition={form.values.amount}>
+                ≈ <FormatBalance
+                  balance={stakingPoolHelper.liquidExchangeRate.mul(Fixed18.fromNatural(form.values.amount).sub(climeFee)) || 0}
+                  currency={stakingPool.stakingCurrency}
                 />
               </Condition>
             }

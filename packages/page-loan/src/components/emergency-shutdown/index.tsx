@@ -12,11 +12,11 @@ import { Process } from './Process';
 import { Success } from './Success';
 
 export const Inner = (): JSX.Element => {
-  const { step } = useContext(EmergencyShutdownContext);
+  const { reclaimBalanceIsEmpty, step } = useContext(EmergencyShutdownContext);
 
   return (
     <Card>
-      <Condition condition={step !== 'success'}>
+      <Condition condition={step !== 'success' && !reclaimBalanceIsEmpty }>
         <Steps
           current={StepRoute.findIndex((c) => step === c)}
           size='small'

@@ -72,7 +72,7 @@ export const DexExchangeRate: FC<Props> = memo(({ supply, target }) => {
           currency: targetToken
         }
       ]}
-      pairSymbol='='
+      pairSymbol='≈'
     />
   );
 });

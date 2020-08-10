@@ -39,7 +39,7 @@ const MarketRate: FC<MarketRateProps> = ({ basePriceRate, current, target }) => 
           currency: target
         }
       ]}
-      pairSymbol='='
+      pairSymbol='≈'
     />
   );
 };

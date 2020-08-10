@@ -62,7 +62,7 @@ export const StakingPoolExchangeRate: FC<StakingPoolExchangeRateProps> = ({
     <FormatBalance
       className={className}
       pair={tokenPair}
-      pairSymbol='='
+      pairSymbol='≈'
     />
   );
 };

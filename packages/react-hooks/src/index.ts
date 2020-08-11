@@ -1,3 +1,7 @@
+import useRequest from '@umijs/use-request';
+
+export { useRequest };
+
 // system
 export * from './useAccounts';
 export * from './useApi';

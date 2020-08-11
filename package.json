@@ -21,10 +21,12 @@
     "analyze": "source-map-explorer 'packages/apps/build/static/js/*.js'",
     "build:dapp": "cd packages/apps && react-app-rewired build",
     "build:dashboard": "cd packages/dashboard && react-app-rewired build",
+    "release:ghpages": "gh-pages -d packages/apps/build",
     "test": "polkadot-dev-run-test",
     "lint": "polkadot-dev-run-lint"
   },
   "dependencies": {
+    "gh-pages": "^3.1.0",
     "history": "^5.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

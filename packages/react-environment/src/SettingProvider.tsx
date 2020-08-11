@@ -50,8 +50,10 @@ export const SettingProvider: FC<PropsWithChildren<any>> = ({ children }) => {
 
   useEffect(() => {
     // get search params from path
-    const searchParams = new URLSearchParams(window.location.search);
+    const searchParams = new URLSearchParams(window.location.href.replace(/^.*?\?/, ''));
     const endpoint = searchParams.get('endpoint');
+
+    console.log(endpoint);
 
     if (endpoint) {
       setEndpoint([{ name: '', url: endpoint }]);

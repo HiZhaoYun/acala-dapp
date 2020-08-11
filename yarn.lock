@@ -24,7 +24,7 @@
     memoizee "^0.4.14"
     rxjs "^6.5.5"
 
-"@acala-network/api@0.4.0-beta.0", "@acala-network/api@beta":
+"@acala-network/api@beta":
   version "0.4.0-beta.0"
   resolved "https://registry.yarnpkg.com/@acala-network/api/-/api-0.4.0-beta.0.tgz#f891eeb0a9b390fa2786129f942b17189daf93e2"
   integrity sha512-sNNY4W6Xvdt4XBJQLQJGdvr1JAAYmIwfnq/vG4tig7JCkCPPRRH0bBpE2ATN76c0uNG3P6gFNzgWxoPgh2j8gA==
@@ -36,13 +36,20 @@
     "@polkadot/api" "^1.18.1"
     "@polkadot/rpc-core" "^1.18.1"
 
-"@acala-network/app-util@0.4.0-beta.0", "@acala-network/app-util@beta":
+"@acala-network/app-util@beta":
   version "0.4.0-beta.0"
   resolved "https://registry.yarnpkg.com/@acala-network/app-util/-/app-util-0.4.0-beta.0.tgz#ee755391acdfb83b459dcb025fa695585007a885"
   integrity sha512-y7Kl/gIoPm9PcQRwnwqIwDtPLdKEDhdoHcmVrGejhiDSiUIgPmGFc1hcpO4BuKJxwiYI7cbOrw4fL3N5OVDs3Q==
   dependencies:
     "@babel/runtime" "^7.10.2"
     bignumber.js "^9.0.0"
+
+"@acala-network/type-definitions@^0.2.0-beta.63":
+  version "0.2.0-beta.63"
+  resolved "https://registry.yarnpkg.com/@acala-network/type-definitions/-/type-definitions-0.2.0-beta.63.tgz#7be279df5a91b7c94bf6d0f5a9368e3890441652"
+  integrity sha512-YglRjk0gftWHwmpyDEPNyp6qR7/vUcIFuxTczjLSgVy24WOOUNEz69cHv10xAt/ZUH/eFZ/wW756kd8G9gewbw==
+  dependencies:
+    "@open-web3/orml-type-definitions" "^0.5.1"
 
 "@acala-network/type-definitions@^0.4.0-beta.0":
   version "0.4.0-beta.0"
@@ -51,7 +58,20 @@
   dependencies:
     "@open-web3/orml-type-definitions" "^0.5.1"
 
-"@acala-network/types@0.4.0-beta.0", "@acala-network/types@^0.2.0-beta.63", "@acala-network/types@^0.4.0-beta.0", "@acala-network/types@beta":
+"@acala-network/types@^0.2.0-beta.63":
+  version "0.2.0-beta.63"
+  resolved "https://registry.yarnpkg.com/@acala-network/types/-/types-0.2.0-beta.63.tgz#77fcf90c089201ca0d5f08d261536acef744009c"
+  integrity sha512-tKhZnoQCs7bB3tHLimAzzzMv9jTJzYB64dA6N2BE/d8vP7diGCHCxc/nOqkl9W4CJMhSxi/M+FeADV0zYLCyQg==
+  dependencies:
+    "@acala-network/type-definitions" "^0.2.0-beta.63"
+    "@babel/runtime" "^7.10.2"
+    "@open-web3/api-mobx" "^0.5.1"
+    "@open-web3/orml-types" "^0.5.1"
+    "@polkadot/api" "^1.18.1"
+    "@polkadot/typegen" "^1.18.1"
+    "@polkadot/types" "^1.18.1"
+
+"@acala-network/types@^0.4.0-beta.0", "@acala-network/types@beta":
   version "0.4.0-beta.0"
   resolved "https://registry.yarnpkg.com/@acala-network/types/-/types-0.4.0-beta.0.tgz#0ec593165f88821a9a86eccb71a1c92814c03e8b"
   integrity sha512-x2GP0/Z3CmeRA1pA8bQyoFuQ6Q/Yaiz8wjlkVDS8vdbyXeLbL0ak2EtUd1SIndFF+g9C0VKecHKu/7WaaVCiOA==
@@ -2988,7 +3008,7 @@
     memoizee "^0.4.14"
     rxjs "^6.6.0"
 
-"@polkadot/api@1.25.1", "@polkadot/api@^1.10.1", "@polkadot/api@^1.15.1", "@polkadot/api@^1.18.1", "@polkadot/api@^1.23.1":
+"@polkadot/api@1.25.1", "@polkadot/api@^1.10.1", "@polkadot/api@^1.18.1", "@polkadot/api@^1.23.1":
   version "1.25.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-1.25.1.tgz#5d565b1940f9ee3080030058561cc149e23871d2"
   integrity sha512-cUDITOrx68HYj4EUYYeV3NGT/UmFOD+6HkU0AQETns4XOzrve9WRs7xC7gLAFp8/V4k0z+emt8AP0+MavuWCkg==

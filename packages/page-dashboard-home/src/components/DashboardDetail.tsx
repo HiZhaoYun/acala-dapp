@@ -9,12 +9,14 @@ import { get } from 'lodash';
 const DashboardDetail: FC = () => {
   const aUSDIssuedData = useRequest(() => ({
     method: 'GET',
-    url: 'http://39.99.168.67:8086/query?q=SELECT MAX("amount") FROM "acala"."autogen"."issuance" WHERE time > now() - 30d AND time < now() AND asset = \'AUSD\' GROUP BY time(1d)'
+    url:
+      'http://39.99.168.67:8086/query?q=SELECT MAX("amount") FROM "acala"."autogen"."issuance" WHERE time > now() - 30d AND time < now() AND asset = \'AUSD\' GROUP BY time(1d)'
   }));
 
   const newAccountData = useRequest(() => ({
     method: 'GET',
-    url: 'http://39.99.168.67:8086/query?q=SELECT SUM("count") FROM "acala"."autogen"."new-account" WHERE time > now() - 30d AND time < now() GROUP BY time(1d)'
+    url:
+      'http://39.99.168.67:8086/query?q=SELECT SUM("count") FROM "acala"."autogen"."new-account" WHERE time > now() - 30d AND time < now() GROUP BY time(1d)'
   }));
 
   const [todayAUSD, aUSDIssuedHistory] = useMemo(() => {
@@ -37,66 +39,56 @@ const DashboardDetail: FC = () => {
   return (
     <div className={classes.root}>
       <div className={classes.item}>
-        <Statistic title='aUSD Issued'
-          value={(
+        <Statistic
+          title='aUSD Issued'
+          value={
             <div className={classes.value}>
-              <div>
-                {todayAUSD}
-              </div>
-              {
-                aUSDIssuedHistory ? (
-                  <TinyAreaChart
-                    color='#FF7788'
-                    data={aUSDIssuedHistory.map(item => ({ date: item[0], value: item[1] }))}
-                    height={60}
-                    width={124}
-                    xField='date'
-                    yField='value'
-                  />
-                ) : null
-              }
+              <div>{todayAUSD}</div>
+              {aUSDIssuedHistory ? (
+                <TinyAreaChart
+                  color='#FF7788'
+                  data={aUSDIssuedHistory.map((item) => ({ date: item[0], value: item[1] }))}
+                  height={60}
+                  width={124}
+                  xField='date'
+                  yField='value'
+                />
+              ) : null}
             </div>
-          )}
+          }
         />
       </div>
       <div className={classes.item}>
-        <Statistic title='Dex Daily Volume'
-          value={'111111'} />
+        <Statistic title='Dex Daily Volume' value={'111111'} />
       </div>
       <div className={classes.item}>
-        <Statistic title='DOT Staked'
-          value={'111111'} />
+        <Statistic title='DOT Staked' value={'111111'} />
       </div>
       <div className={classes.item}>
-        <Statistic title='New Accounts'
-          value={(
+        <Statistic
+          title='New Accounts'
+          value={
             <div className={classes.value}>
-              <div>
-                {todayNewAccounnt}
-              </div>
-              {
-                newAccountHistory ? (
-                  <TinyAreaChart
-                    color='#FF7788'
-                    data={newAccountHistory.map(item => ({ date: item[0], value: item[1] }))}
-                    height={60}
-                    width={124}
-                    xField='date'
-                    yField='value'
-                  />
-                ) : null
-              }
+              <div>{todayNewAccounnt}</div>
+              {newAccountHistory ? (
+                <TinyAreaChart
+                  color='#FF7788'
+                  data={newAccountHistory.map((item) => ({ date: item[0], value: item[1] }))}
+                  height={60}
+                  width={124}
+                  xField='date'
+                  yField='value'
+                />
+              ) : null}
             </div>
-          )}
+          }
         />
       </div>
       <div className={classes.item}>
-        <Statistic title='Daily Trascation'
-          value={'111111'} />
+        <Statistic title='Daily Trascation' value={'111111'} />
       </div>
       <div className={classes.item}>
-        <Statistic title='Total Asset Locked'
-          value={'111111'} />
+        <Statistic title='Total Asset Locked' value={'111111'} />
       </div>
     </div>
   );

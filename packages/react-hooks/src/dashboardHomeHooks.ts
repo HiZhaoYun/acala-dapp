@@ -1,8 +1,9 @@
 import { Fixed18 } from '@acala-network/app-util';
-import { useMemo } from 'react';
+import useRequest from '@umijs/use-request';
 import { get } from 'lodash';
+import { useMemo } from 'react';
 
-import { useIssuance, useConstants, useStakingPoolHelper, useRequest } from './index';
+import { useConstants, useIssuance, useStakingPoolHelper } from './index';
 
 type HooksReturnType = Record<
   string,

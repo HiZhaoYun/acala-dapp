@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import { Page, Grid } from '@acala-dapp/ui-components';
 
 import { LoanCollateralRatio } from './components/LoanCollateralRatio';
+import { LoanLiquidationRatio } from './components/LoanLiquidationRatio';
 import { TotalDebitAndCollateral } from './components/TotalDebitAndCollateral';
 import { LoansOverview } from './components/LoansOverview';
 
@@ -22,7 +23,7 @@ const PageWallet: FC = () => {
           </Grid>
           <Grid item
             span={12}>
-            <LoanCollateralRatio />
+            <LoanLiquidationRatio />
           </Grid>
           <Grid item>
             <LoansOverview />

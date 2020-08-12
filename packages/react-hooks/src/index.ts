@@ -55,5 +55,5 @@ export * from './auctionHooks';
 export * from './utils';
 
 // dashboard
-
+export * from './useRequestChart';
 export * from './dashboardHomeHooks';

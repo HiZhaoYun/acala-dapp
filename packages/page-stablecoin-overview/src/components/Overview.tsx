@@ -7,7 +7,7 @@ import classes from './Overview.module.scss';
 
 const DashboardDetail: FC = () => {
   const { stableCurrency } = useConstants();
-  const audIssue = useIssuance(stableCurrency);
+  const ausdIssue = useIssuance(stableCurrency);
   const totalDebit = useTotalDebit();
   const totalCollateral = useTotalCollatearl();
 
@@ -16,7 +16,7 @@ const DashboardDetail: FC = () => {
       <div className={classes.item}>
         <Statistic
           title={<Token currency={stableCurrency} fullname={true} icon={true} />}
-          value={audIssue ? audIssue.toString(0) : '--'}
+          value={ausdIssue ? ausdIssue.toString(0) : '--'}
         />
       </div>
       <div className={classes.item}>

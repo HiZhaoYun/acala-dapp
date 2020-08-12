@@ -1,8 +1,13 @@
 import { Token, FormatBalance } from '@acala-dapp/react-components';
-import { useConstants, useRequestChart } from '@acala-dapp/react-hooks';
+import { useConstants, useIssuance, useRequestChart } from '@acala-dapp/react-hooks';
 import { Card } from '@acala-dapp/ui-components';
 import { Table } from 'antd';
 import React, { FC, useMemo } from 'react';
+
+const Issued: FC<{ currency: string }> = ({ currency }) => {
+  const value = useIssuance(currency);
+  return <div>{value?.toString(0)}</div>;
+};
 
 const AssetOverview: FC = () => {
   const _data = useRequestChart(
@@ -42,7 +47,7 @@ const AssetOverview: FC = () => {
       {
         key: 'supply',
         /* eslint-disable-next-line react/display-name */
-        render: (item: any) => null,
+        render: (item: any) => <Issued currency={item.currency} />,
         title: 'Supply (aUSD)'
       },
       {

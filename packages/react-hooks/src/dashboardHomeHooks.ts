@@ -8,7 +8,7 @@ import { useConstants, useIssuance, useStakingPoolHelper } from './index';
 type HooksReturnType = Record<
   string,
   {
-    value?: Fixed18;
+    value?: string;
     history?: {
       date: number;
       value: number;
@@ -22,16 +22,16 @@ const useHistory = (sql: string) => {
     url: `http://39.99.168.67:8086/query?q=${sql}`
   }));
 
-  const [today, history] = useMemo(() => {
+  const history = useMemo(() => {
     if (!data.data || !data.data.results) return [];
     const temp = get(data, 'data.results.0.series.0.values') as any[];
-    const today = get(temp, [temp.length - 1, 1]) || 0;
-    const yesterday = get(temp, [temp.length - 2, 1]) || 0;
-
-    return [today - yesterday, temp?.slice(-7).map((item, index) => ({ date: index + 1, value: item[1] }))];
+    return temp
+      ?.filter((item) => item[1])
+      ?.slice(-7)
+      .map((item, index) => ({ date: index + 1, value: item[1] }));
   }, [data]);
 
-  return [today, history];
+  return history;
 };
 
 export const useDashboard = (): HooksReturnType => {
@@ -39,14 +39,14 @@ export const useDashboard = (): HooksReturnType => {
   const audIssue = useIssuance(stableCurrency);
   const helper = useStakingPoolHelper();
 
-  const [, DOTStakedHistory] = useHistory(
+  const DOTStakedHistory = useHistory(
     'SELECT mean("amount") FROM "acala"."autogen"."dot-staked" WHERE time > now() - 8d AND time < now() GROUP BY time(1d)'
   );
 
-  const [todayAUSD, aUSDIssuedHistory] = useHistory(
+  const aUSDIssuedHistory = useHistory(
     `SELECT MAX("amount") FROM "acala"."autogen"."issuance" WHERE time > now() - 8d AND time < now() AND asset = \'AUSD\' GROUP BY time(1d)`
   );
-  const [todayNewAccounnt, newAccountHistory] = useHistory(
+  const newAccountHistory = useHistory(
     `SELECT SUM("count") FROM "acala"."autogen"."new-account" WHERE time > now() - 8d AND time < now() GROUP BY time(1d)`
   );
 
@@ -64,7 +64,7 @@ export const useDashboard = (): HooksReturnType => {
         history: DOTStakedHistory
       },
       newAccounts: {
-        value: todayNewAccounnt?.toFixed(0),
+        value: newAccountHistory?.[newAccountHistory.length - 1]?.value,
         history: newAccountHistory
       },
       dailyTrascation: {

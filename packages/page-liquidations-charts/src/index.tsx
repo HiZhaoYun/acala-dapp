@@ -11,7 +11,7 @@ const PageDashboardHome: FC = () => {
       <Page.Content>
         <Grid container>
           <Grid item>
-            <Liquidations />
+            {/* <Liquidations /> */}
           </Grid>
           <Grid item>
             <CollateralAuctionList />

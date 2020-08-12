@@ -73,14 +73,13 @@ const OverviewDataDisplay: FC<OverviewDataDisplayProps> = ({ data, title }) => {
               radius={0.75}
               type='theta'
             />
-            <Tooltip />
             <Axis visible={false} />
             <Interval
               adjust='stack'
               color={['item', (item: string): string => getTokenColor(item)]}
               label={['count', {
                 content: (data: any): string => {
-                  return `${data.item}: ${(data.percent * 100).toFixed(2)}%, $${data.count}`;
+                  return `${data.item}: ${(data.percent * 100).toFixed(2)}%`;
                 }
               }]}
               position='percent'
@@ -88,6 +87,10 @@ const OverviewDataDisplay: FC<OverviewDataDisplayProps> = ({ data, title }) => {
                 lineWidth: 1,
                 stroke: '#fff'
               }}
+              tooltip={['item*count', (item, count) => ({
+                name: item,
+                value: '$ ' + count
+              })]}
             />
             <Interaction type='element-single-selected' />
           </Chart>

@@ -1,22 +1,19 @@
-import { Fixed18 } from '@acala-network/app-util';
 import useRequest from '@umijs/use-request';
 import { get } from 'lodash';
 import { useMemo } from 'react';
 
 import { useConstants, useIssuance, useStakingPoolHelper } from './index';
 
-type HooksReturnType = Record<
-  string,
-  {
-    value?: string;
-    history?: {
-      date: number;
-      value: number;
-    }[];
-  }
->;
+type HooksReturnType = Record<string,
+{
+  value?: string;
+  history?: {
+    date: number;
+    value: number;
+  }[];
+}>;
 
-const useHistory = (sql: string) => {
+const useHistory = (sql: string): any => {
   const data = useRequest(() => ({
     method: 'GET',
     url: `http://39.99.168.67:8086/query?q=${sql}`
@@ -25,6 +22,7 @@ const useHistory = (sql: string) => {
   const history = useMemo(() => {
     if (!data.data || !data.data.results) return [];
     const temp = get(data, 'data.results.0.series.0.values') as any[];
+
     return temp
       ?.filter((item) => item[1])
       ?.slice(-7)
@@ -44,35 +42,35 @@ export const useDashboard = (): HooksReturnType => {
   );
 
   const aUSDIssuedHistory = useHistory(
-    `SELECT MAX("amount") FROM "acala"."autogen"."issuance" WHERE time > now() - 8d AND time < now() AND asset = \'AUSD\' GROUP BY time(1d)`
+    'SELECT MAX("amount") FROM "acala"."autogen"."issuance" WHERE time > now() - 8d AND time < now() AND asset = \'AUSD\' GROUP BY time(1d)'
   );
   const newAccountHistory = useHistory(
-    `SELECT SUM("count") FROM "acala"."autogen"."new-account" WHERE time > now() - 8d AND time < now() GROUP BY time(1d)`
+    'SELECT SUM("count") FROM "acala"."autogen"."new-account" WHERE time > now() - 8d AND time < now() GROUP BY time(1d)'
   );
 
   return useMemo(() => {
     return {
+      DOTStaked: {
+        history: DOTStakedHistory,
+        value: helper?.communalTotal?.toString(0)
+      },
       aUSDIssued: {
-        value: audIssue?.toString(0),
-        history: aUSDIssuedHistory
+        history: aUSDIssuedHistory,
+        value: audIssue?.toString(0)
+      },
+      dailyTrascation: {
+        history: []
       },
       dexDailyVolume: {
         history: []
       },
-      DOTStaked: {
-        value: helper?.communalTotal?.toString(0),
-        history: DOTStakedHistory
-      },
       newAccounts: {
-        value: newAccountHistory?.[newAccountHistory.length - 1]?.value,
-        history: newAccountHistory
-      },
-      dailyTrascation: {
-        history: []
+        history: newAccountHistory,
+        value: newAccountHistory?.[newAccountHistory.length - 1]?.value
       },
       totalAssetLocked: {
         history: []
       }
     };
-  }, [audIssue, helper]);
+  }, [audIssue, helper, DOTStakedHistory, aUSDIssuedHistory, newAccountHistory]);
 };

@@ -57,6 +57,10 @@ export const LoanCollateralRatio: FC = () => {
               }
             }]}
             position='currency*ratio'
+            tooltip={['ratio', (ratio) => ({
+              name: 'Collateral Ratio',
+              value: `${(ratio * 100).toFixed(2)} %`
+            })]}
           />
           <Tooltip shared />
         </Chart>

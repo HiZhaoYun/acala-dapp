@@ -1,25 +1,25 @@
 import { getTokenColor } from '@acala-dapp/react-components';
-import { useRequestChart } from '@acala-dapp/react-hooks';
+import { useAllLoansType } from '@acala-dapp/react-hooks';
 import { Card } from '@acala-dapp/ui-components';
-import { Fixed18 } from '@acala-network/app-util';
+import { Fixed18, convertToFixed18 } from '@acala-network/app-util';
 import { Chart, Interval, Tooltip } from 'bizcharts';
 import React, { FC, useMemo } from 'react';
 
 export const LoanLiquidationRatio: FC = () => {
-  const data = useRequestChart(
-    `SELECT  mean("liquidationRatio") FROM  "acala"."autogen"."cdp" WHERE time < now() GROUP BY time(1d), "asset" ORDER BY time DESC LIMIT 2`
-  );
+  const types = useAllLoansType();
 
   const _data = useMemo(() => {
+    if (!types) return [];
+
     return (
-      data?.map((obj: any) => {
+      Object.keys(types).map((currency) => {
         return {
-          currency: obj?.tags?.asset,
-          ratio: Number(obj?.values?.[1]?.[1]?.toFixed(2))
+          currency: currency,
+          ratio: convertToFixed18(types[currency].liquidationRatio)
         };
       }) || []
     );
-  }, [data]);
+  }, [types]);
 
   return useMemo(() => {
     return (
@@ -38,11 +38,15 @@ export const LoanLiquidationRatio: FC = () => {
               'ratio',
               {
                 content: (data: any): string => {
-                  return `${data.ratio}%`;
+                  return `${data.ratio.mul(Fixed18.fromNatural(100)).toString(2, 3)}%`;
                 }
               }
             ]}
             position='currency*ratio'
+            tooltip={['ratio', (ratio) => ({
+              name: 'Liquidation Ratio',
+              value: `${(ratio * 100).toFixed(2)} %`
+            })]}
           />
           <Tooltip shared />
         </Chart>

@@ -38,6 +38,34 @@ export const useLoanType = (currency: CurrencyLike): DerivedLoanType | undefined
 };
 
 /**
+ * @name useAllLoanTyep
+ * @description get all loan type
+ */
+export const useAllLoansType = (): Record<string, DerivedLoanType> | undefined => {
+  const { api } = useApi();
+  const { loanCurrencies } = useConstants();
+  const [data, setData] = useState<Record<string, DerivedLoanType> | undefined>();
+
+  useEffect(() => {
+    const subscriber = combineLatest(loanCurrencies.map((currency) => {
+      return (api.derive as any).loan.loanType(currency) as Observable<DerivedLoanType>;
+    })).subscribe((result) => {
+      setData(result.reduce((acc, cur, index) => {
+        const currency = loanCurrencies[index];
+
+        acc[currency.toString()] = cur;
+
+        return acc;
+      }, {} as Record<string, DerivedLoanType>));
+    });
+
+    return (): void => subscriber.unsubscribe();
+  }, [api, loanCurrencies, setData]);
+
+  return data;
+};
+
+/**
  * @name useLoanHelper
  * @description get user loan helper object
  */

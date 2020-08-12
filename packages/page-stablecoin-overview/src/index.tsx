@@ -8,7 +8,10 @@ import Overview from './components/Overview';
 const PageDashboardHome: FC = () => {
   return (
     <Page fullscreen>
-      <Page.Title breadcrumb='Overview' title='Stablecoin' />
+      <Page.Title
+        breadcrumb='Overview'
+        title='Stablecoin'
+      />
       <Page.Content>
         <Overview />
       </Page.Content>
@@ -18,7 +21,10 @@ const PageDashboardHome: FC = () => {
           <Grid item>
             <SystemOverview />
           </Grid>
-          <Grid item span={24}>
+          <Grid
+            item
+            span={24}
+          >
             <AssetOverview />
           </Grid>
         </Grid>

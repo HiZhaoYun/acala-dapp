@@ -44,9 +44,11 @@ export const PageLoading: FC = () => {
   );
 };
 
-export const CardLoading: FC = () => {
+export const CardLoading: FC<{ height?: number}> = ({ height }) => {
   return (
-    <div className={classes.card}>
+    <div className={classes.card}
+      style={{ height }}
+    >
       <Loading/>
     </div>
   );

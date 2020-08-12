@@ -1,5 +1,5 @@
 import { Statistic } from '@acala-dapp/ui-components';
-import { Token } from '@acala-dapp/react-components';
+import { Token, FormatValue } from '@acala-dapp/react-components';
 import React, { FC } from 'react';
 import { useIssuance, useConstants, useTotalDebit, useTotalCollatearl } from '@acala-dapp/react-hooks';
 
@@ -15,17 +15,32 @@ const DashboardDetail: FC = () => {
     <div className={classes.root}>
       <div className={classes.item}>
         <Statistic
-          title={<Token currency={stableCurrency} fullname={true} icon={true} />}
-          value={ausdIssue ? ausdIssue.toString(0) : '--'}
+          title={<Token
+            currency={stableCurrency}
+            fullname={true}
+            icon={true}
+          />}
+          value={<FormatValue data={ausdIssue}
+            prefix='$'
+          />}
         />
       </div>
       <div className={classes.item}>
-        <Statistic title='Total Loans' value={totalDebit?.amount ? totalDebit.amount.toString(0) : '--'} />
+        <Statistic
+          title='Total Debits'
+          value={
+            <FormatValue data={totalDebit?.amount}
+              prefix='$'
+            />
+          }
+        />
       </div>
       <div className={classes.item}>
         <Statistic
           title='Total Collateral'
-          value={totalCollateral?.amount ? totalCollateral.amount.toString(0) : '--'}
+          value={<FormatValue data={totalCollateral?.amount}
+            prefix='$'
+          />}
         />
       </div>
     </div>

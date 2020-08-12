@@ -2,13 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Table } from 'antd';
 import { Card } from '@acala-dapp/ui-components';
 import { useConstants } from '@acala-dapp/react-hooks';
-import {
-  Token,
-  TotalCollateral,
-  TotalDebit,
-  RequiredCollateralRatio,
-  TotalCollateralRatio
-} from '@acala-dapp/react-components';
+import { Token, TotalCollateral, TotalDebit, RequiredCollateralRatio, TotalCollateralRatio } from '@acala-dapp/react-components';
 
 export const LoansOverview: FC = () => {
   const { loanCurrencies } = useConstants();
@@ -18,7 +12,13 @@ export const LoansOverview: FC = () => {
       {
         key: 'currency',
         /* eslint-disable-next-line react/display-name */
-        render: (item: any): JSX.Element => <Token currency={item.currency} fullname={true} icon={true} />,
+        render: (item: any): JSX.Element => (
+          <Token
+            currency={item.currency}
+            fullname={true}
+            icon={true}
+          />
+        ),
         title: 'Currency'
       },
       {
@@ -57,8 +57,13 @@ export const LoansOverview: FC = () => {
   );
 
   return (
-    <Card header='Loans Overview' padding={false}>
-      <Table columns={columns} rowKey={(id) => id.currency.toString()} dataSource={data} pagination={false} />
+    <Card header='Loans Overview'
+      padding={false}>
+      <Table columns={columns}
+        dataSource={data}
+        pagination={false}
+        rowKey={(id): string => id.currency.toString()}
+      />
     </Card>
   );
 };

@@ -1,73 +1,69 @@
-import { Token, FormatBalance } from '@acala-dapp/react-components';
-import { useConstants, useIssuance, useRequestChart } from '@acala-dapp/react-hooks';
-import { Card } from '@acala-dapp/ui-components';
-import { Table } from 'antd';
 import React, { FC, useMemo } from 'react';
-
-const Issued: FC<{ currency: string }> = ({ currency }) => {
-  const value = useIssuance(currency);
-  return <div>{value?.toString(0)}</div>;
-};
+import { Table } from 'antd';
+import { Card } from '@acala-dapp/ui-components';
+import { useConstants } from '@acala-dapp/react-hooks';
+import { Token, TotalCollateral, TotalDebit, TotalCollateralRatio, LiquidationRatio } from '@acala-dapp/react-components';
 
 const AssetOverview: FC = () => {
-  const _data = useRequestChart(
-    `SELECT mean("collateralValue") AS "locked", mean("liquidationRatio") AS "liquidationRatio", mean("collateralRatio") AS "collateralsRatio" FROM "acala"."autogen"."cdp" WHERE time < now() GROUP BY time(1d), "asset" FILL(null) ORDER BY time DESC LIMIT 2`
-  );
-
-  const list = useMemo(() => {
-    return _data?.map((obj: any) => {
-      return {
-        currency: obj?.tags.asset,
-        ...obj?.values
-          .filter((item: any) => item[1])?.[0]
-          .reduce((r: any, c: any, i: any) => {
-            r[obj.columns[i]] = c;
-            return r;
-          }, {})
-      };
-    });
-  }, [_data]);
+  const { loanCurrencies } = useConstants();
 
   const columns = useMemo(() => {
     return [
       {
         key: 'currency',
         /* eslint-disable-next-line react/display-name */
-        render: (item: any): JSX.Element => {
-          return <Token currency={item.currency} fullname={true} icon={true} />;
-        },
+        render: (item: any): JSX.Element => (
+          <Token
+            currency={item.currency}
+            fullname={true}
+            icon={true}
+          />
+        ),
         title: 'Currency'
       },
       {
-        key: 'locked',
+        key: 'total_collateral',
         /* eslint-disable-next-line react/display-name */
-        render: (item: any) => item.locked.toFixed(0),
+        render: (item: any): JSX.Element => <TotalCollateral currency={item.currency} />,
         title: 'Locked'
       },
       {
-        key: 'supply',
+        key: 'total_debit',
         /* eslint-disable-next-line react/display-name */
-        render: (item: any) => <Issued currency={item.currency} />,
+        render: (item: any): JSX.Element => <TotalDebit currency={item.currency} />,
         title: 'Supply (aUSD)'
       },
       {
-        key: 'collateralsRatio',
+        key: 'collateral_ratio',
         /* eslint-disable-next-line react/display-name */
-        render: (item: any) => `${(item.collateralsRatio * 100).toFixed(2)}%`,
+        render: (item: any): JSX.Element => <TotalCollateralRatio currency={item.currency} />,
         title: 'Collaterals Ratio %'
       },
       {
-        key: 'liquidationRatio',
+        key: 'required_collaateral_ratio',
         /* eslint-disable-next-line react/display-name */
-        render: (item: any) => `${(item.liquidationRatio * 100).toFixed(2)}%`,
+        render: (item: any): JSX.Element => <LiquidationRatio currency={item.currency} />,
         title: 'Liquidation Ratio %'
       }
     ];
   }, []);
 
+  const data = useMemo(
+    () =>
+      loanCurrencies.map((item) => ({
+        currency: item
+      })),
+    [loanCurrencies]
+  );
+
   return (
-    <Card header='Assets Overview' padding={false}>
-      <Table columns={columns} rowKey='currency' dataSource={list} pagination={false} />
+    <Card header='Asset Overview'
+      padding={false}>
+      <Table columns={columns}
+        dataSource={data}
+        pagination={false}
+        rowKey={(id): string => id.currency.toString()}
+      />
     </Card>
   );
 };

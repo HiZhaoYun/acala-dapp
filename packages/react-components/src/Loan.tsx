@@ -48,16 +48,16 @@ export const RequiredCollateralRatio: FC<LoanPropertyProps<Omit<FormatNumberProp
   currency,
   ...other
 }) => {
-  const helper = useLoanHelper(currency);
+  const type = useLoanType(currency);
 
-  if (!helper) {
+  if (!type) {
     return null;
   }
 
   return (
     <FormatRatio
       {...other}
-      data={helper.requiredCollateralRatio}
+      data={convertToFixed18(type.requiredCollateralRatio)}
     />
   );
 };
@@ -66,16 +66,16 @@ export const LiquidationRatio: FC<LoanPropertyProps<Omit<FormatNumberProps, 'dat
   currency,
   ...other
 }) => {
-  const helper = useLoanHelper(currency);
+  const type = useLoanType(currency);
 
-  if (!helper) {
+  if (!type) {
     return null;
   }
 
   return (
     <FormatRatio
       {...other}
-      data={helper.liquidationRatio}
+      data={convertToFixed18(type.liquidationRatio)}
     />
   );
 };

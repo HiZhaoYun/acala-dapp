@@ -23,6 +23,8 @@ interface AddressInfo {
 }
 
 export interface AccountsData {
+  authRequired: boolean;
+  setAuthRequired: React.Dispatch<React.SetStateAction<boolean>>
   active: InjectedAccountWithMeta | null;
   accounts: InjectedAccountWithMeta[];
   error: AccountProviderError;
@@ -51,6 +53,7 @@ export const AccountProvider: FC<Props> = memo(({
   const [error, setError] = useState<AccountProviderError>('');
   const [ready, setReady] = useState<boolean>(false);
   const [addressList, setAddressList] = useState<string[]>([]);
+  const [authRequired, setAuthRequired] = useState<boolean>(true);
   const addressListRef = useRef<string[]>([]);
   const { getStorage, setStorage } = useStorage({ useAccountPrefix: false });
   const { close, open, status } = useModal(false);
@@ -113,6 +116,8 @@ export const AccountProvider: FC<Props> = memo(({
   }, [setActiveAccount, close]);
 
   const renderError = useCallback((): ReactNode => {
+    if(!authRequired) return null;
+
     if (error && error === 'NO_ACCOUNTS' && NoAccounts) {
       return NoAccounts;
     }
@@ -122,7 +127,7 @@ export const AccountProvider: FC<Props> = memo(({
     }
 
     return null;
-  }, [error, NoAccounts, NoExtensions]);
+  }, [authRequired, error, NoAccounts, NoExtensions]);
 
   useEffect(() => {
     loadAccounts()
@@ -166,6 +171,8 @@ export const AccountProvider: FC<Props> = memo(({
   return (
     <AccountContext.Provider
       value={{
+        authRequired,
+        setAuthRequired,
         accounts,
         active,
         addAddress,

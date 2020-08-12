@@ -15,15 +15,17 @@ interface Options {
 export const useIsAppReady = (options?: Options): { appReadyStatus: boolean } => {
   const [appReadyStatus, setAppReadyStatus] = useState<boolean>(false);
   const { api } = useApi();
-  const { active: activeAccount } = useAccounts();
+  const { active: activeAccount, authRequired } = useAccounts();
 
   useEffect(() => {
-    const status = !!activeAccount && !!activeAccount.address && !isEmpty(api);
+    const accountStatus = !authRequired || (!!activeAccount && !!activeAccount.address);
+
+    const status = accountStatus && !isEmpty(api);
 
     // handle onSuccess or onError callback
     (status ? get(options, 'onSuccess', noop) : get(options, 'onError', noop))();
     setAppReadyStatus(status);
-  }, [activeAccount, api, options]);
+  }, [authRequired, activeAccount, api, options]);
 
   return { appReadyStatus };
 };

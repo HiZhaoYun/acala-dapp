@@ -5,7 +5,7 @@ import { useIssuance, useConstants, useTotalDebit, useTotalCollatearl } from '@a
 
 import classes from './Overview.module.scss';
 
-const DashboardDetail: FC = () => {
+const Overview: FC = () => {
   const { stableCurrency } = useConstants();
   const ausdIssue = useIssuance(stableCurrency);
   const totalDebit = useTotalDebit();
@@ -47,4 +47,4 @@ const DashboardDetail: FC = () => {
   );
 };
 
-export default DashboardDetail;
+export default Overview;

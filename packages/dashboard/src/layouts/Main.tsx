@@ -1,6 +1,6 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 
-import { useIsAppReady } from '@acala-dapp/react-hooks';
+import { useIsAppReady, useAccounts } from '@acala-dapp/react-hooks';
 import { FullLoading } from '@acala-dapp/ui-components';
 
 import { Sidebar, SideBarProps } from '../components/SideBar';
@@ -12,13 +12,17 @@ interface Props {
 
 export const MainLayout: React.FC<PropsWithChildren<Props>> = ({ children, sideBarProps }) => {
   const { appReadyStatus } = useIsAppReady();
+  const { setAuthRequired } = useAccounts();
+
+  // Dashboard does not require accounts
+  useEffect(() => {
+    setAuthRequired(false);
+  }, [setAuthRequired]);
 
   return (
     <div className={classes.root}>
       <Sidebar {...sideBarProps} />
-      <div className={classes.content}>
-        {appReadyStatus ? children : <FullLoading />}
-      </div>
+      <div className={classes.content}>{appReadyStatus ? children : <FullLoading />}</div>
     </div>
   );
 };

@@ -1,7 +1,8 @@
-import { useConstants, useAllPrices } from '@acala-dapp/react-hooks';
-import { Statistic } from '@acala-dapp/ui-components';
 import { Token, tokenEq } from '@acala-dapp/react-components';
+import { useAllPrices, useConstants } from '@acala-dapp/react-hooks';
+import { Statistic } from '@acala-dapp/ui-components';
 import React, { FC, useMemo } from 'react';
+
 import classes from './Oracles.module.scss';
 
 const Oracles: FC = () => {
@@ -10,24 +11,23 @@ const Oracles: FC = () => {
 
   const data = useMemo(() => {
     return loanCurrencies.map((id) => {
-      const price = prices.find((i) => tokenEq(id, i.currency))
+      const price = prices.find((i) => tokenEq(id, i.currency));
 
       return {
         price: price,
         currency: id
-      }
-    })
-  }, [prices, loanCurrencies])
+      };
+    });
+  }, [prices, loanCurrencies]);
 
   return (
     <div className={classes.root}>
       {data.map((item) => (
         <div className={classes.item} key={item.currency.toString()}>
-          <Statistic title={
-            <Token currency={item.currency}
-              fullname={true}
-              icon={true}/>}
-              value={item.price?.price.toString() || '--'} />
+          <Statistic
+            title={<Token currency={item.currency} fullname={true} icon={true} />}
+            value={item.price?.price.toString() || '--'}
+          />
         </div>
       ))}
     </div>

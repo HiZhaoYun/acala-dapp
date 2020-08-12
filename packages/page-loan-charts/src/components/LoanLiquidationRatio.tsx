@@ -1,14 +1,9 @@
-import React, { FC, useMemo } from 'react';
-
-import { Fixed18 } from '@acala-network/app-util';
-
-import { Chart, Interval, Tooltip } from 'bizcharts';
-
+import { getTokenColor } from '@acala-dapp/react-components';
+import { useRequestChart } from '@acala-dapp/react-hooks';
 import { Card } from '@acala-dapp/ui-components';
-import { useTotalCollatearl, useTotalDebit, useMemorized, useRequestChart } from '@acala-dapp/react-hooks';
-import { getTokenName, getTokenColor } from '@acala-dapp/react-components';
-
-const ONE_HUNDRED = Fixed18.fromNatural(100);
+import { Fixed18 } from '@acala-network/app-util';
+import { Chart, Interval, Tooltip } from 'bizcharts';
+import React, { FC, useMemo } from 'react';
 
 export const LoanLiquidationRatio: FC = () => {
   const data = useRequestChart(
@@ -16,13 +11,14 @@ export const LoanLiquidationRatio: FC = () => {
   );
 
   const _data = useMemo(() => {
-    return data?.map((obj: any) => {
-      console.log(obj, obj?.values?.[1]?.[1])
-      return {
-        currency: obj?.tags?.asset,
-        ratio: Number(obj?.values?.[1]?.[1]?.toFixed(2))
-      };
-    }) || [];
+    return (
+      data?.map((obj: any) => {
+        return {
+          currency: obj?.tags?.asset,
+          ratio: Number(obj?.values?.[1]?.[1]?.toFixed(2))
+        };
+      }) || []
+    );
   }, [data]);
 
   return useMemo(() => {

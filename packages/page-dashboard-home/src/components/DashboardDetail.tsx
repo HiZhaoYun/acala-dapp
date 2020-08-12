@@ -1,9 +1,8 @@
-import { Statistic } from '@acala-dapp/ui-components';
-import React, { FC } from 'react';
-import { Fixed18 } from '@acala-network/app-util';
-import classes from './DashboardDetail.module.scss';
 import { useDashboard } from '@acala-dapp/react-hooks';
-import { TinyAreaChart, Chart, Area, Line, Tooltip, Axis, Coordinate } from 'bizcharts';
+import { Statistic } from '@acala-dapp/ui-components';
+import { TinyAreaChart } from 'bizcharts';
+import React, { FC } from 'react';
+import classes from './DashboardDetail.module.scss';
 
 interface StatisticContentProps {
   value?: string;
@@ -11,25 +10,15 @@ interface StatisticContentProps {
     date: number;
     value: number;
   }[];
-  scale?: any;
-  areaColor: string;
-  lineColor: string;
+  color: string;
 }
 
-const StatisticContent: FC<StatisticContentProps> = ({ areaColor, lineColor, scale, value, history }) => {
+const StatisticContent: FC<StatisticContentProps> = ({ color, value, history }) => {
   return (
     <div className={classes.statisticContent}>
       <div>{value || '--'}</div>
       <div>
-        <TinyAreaChart
-          scale
-          color={lineColor}
-          data={history || []}
-          height={60}
-          width={124}
-          xField='date'
-          yField='value'
-        />
+        <TinyAreaChart color={color} data={history || []} height={60} width={124} xField='date' yField='value' />
       </div>
     </div>
   );
@@ -44,14 +33,7 @@ const DashboardDetail: FC = () => {
         <Statistic
           className={classes.statistic}
           title='aUSD Issued'
-          value={
-            <StatisticContent
-              lineColor='#ff7788'
-              areaColor='#fbe4e9'
-              value={data.aUSDIssued.value}
-              history={data.aUSDIssued.history}
-            />
-          }
+          value={<StatisticContent color='#ff7788' value={data.aUSDIssued.value} history={data.aUSDIssued.history} />}
         />
       </div>
       <div className={classes.item}>
@@ -59,12 +41,7 @@ const DashboardDetail: FC = () => {
           className={classes.statistic}
           title='Dex Daily Volume'
           value={
-            <StatisticContent
-              lineColor='#c39fdf'
-              areaColor='#f3ecf9'
-              value={data.dexDailyVolume.value}
-              history={data.dexDailyVolume.history}
-            />
+            <StatisticContent color='#c39fdf' value={data.dexDailyVolume.value} history={data.dexDailyVolume.history} />
           }
         />
       </div>
@@ -72,28 +49,14 @@ const DashboardDetail: FC = () => {
         <Statistic
           className={classes.statistic}
           title='DOT Staked'
-          value={
-            <StatisticContent
-              lineColor='#4be1b5'
-              areaColor='#f3ecf9'
-              value={data.DOTStaked.value}
-              history={data.DOTStaked.history}
-            />
-          }
+          value={<StatisticContent color='#4be1b5' value={data.DOTStaked.value} history={data.DOTStaked.history} />}
         />
       </div>
       <div className={classes.item}>
         <Statistic
           className={classes.statistic}
           title='New Accounts'
-          value={
-            <StatisticContent
-              lineColor='#ff7788'
-              areaColor='#fbe4e9'
-              value={data.newAccounts.value}
-              history={data.newAccounts.history}
-            />
-          }
+          value={<StatisticContent color='#ff7788' value={data.newAccounts.value} history={data.newAccounts.history} />}
         />
       </div>
       <div className={classes.item}>
@@ -102,8 +65,7 @@ const DashboardDetail: FC = () => {
           title='Daily Trascation'
           value={
             <StatisticContent
-              lineColor='#c39fdf'
-              areaColor='#f3ecf9'
+              color='#c39fdf'
               value={data.dailyTrascation.value}
               history={data.dailyTrascation.history}
             />
@@ -116,8 +78,7 @@ const DashboardDetail: FC = () => {
           title='Total Asset Locked'
           value={
             <StatisticContent
-              lineColor='#4be1b5'
-              areaColor='#dff9f1'
+              color='#4be1b5'
               value={data.totalAssetLocked.value}
               history={data.totalAssetLocked.history}
             />

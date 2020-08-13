@@ -54,11 +54,17 @@ class Tracker {
 
 const tracker = new Tracker();
 
-export function useCall <T> (path: string, params: CallParams = []): T | undefined {
+export function useCall <T> (path: string, params: CallParams = [], options?: {
+  cacheKey: string
+}): T | undefined {
   const { api } = useApi();
   const { appReadyStatus } = useIsAppReady();
   const { setStore, store } = useContext(globalStoreContext);
-  const key = useMemo(() => `${path}${params.toString() ? '-' + params.toString() : ''}`, [path, params]);
+  const key = useMemo(
+    () =>
+      `${path}${params.toString() ? '-' + params.toString() : ''}${options?.cacheKey ? '-' + options.cacheKey : ''}`,
+    [path, params]
+  );
 
   // on changes, re-subscribe
   useEffect(() => {

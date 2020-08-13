@@ -69,16 +69,10 @@ const CollateralAuctionList: FC = () => {
         title: 'owner'
       },
       {
-        key: 'currency',
-        /* eslint-disable-next-line react/display-name */
-        render: (item: any): JSX.Element => <Token currency={item.currency} />,
-        title: 'Currency'
-      },
-      {
         key: 'amount',
         /* eslint-disable-next-line react/display-name */
         render: (item: any): JSX.Element => <FormatBalance balance={item.amount} currency={item.currency} />,
-        title: 'Amount'
+        title: 'Collateral Amt'
       },
       {
         key: 'target',
@@ -101,14 +95,14 @@ const CollateralAuctionList: FC = () => {
         key: 'bid',
         /* eslint-disable-next-line react/display-name */
         render: (item: any): JSX.Element => <AuctionMakeBid id={item.id} />,
-        title: 'Bid'
+        title: 'Bid（Collateral Price in aUSD)'
       }
     ];
   }, [stableCurrency]);
 
   return (
-    <Card header='Collateral Debit' padding={false}>
-      <Table columns={columns} dataSource={data} />
+    <Card header='Collateral Auction' padding={false}>
+      <Table columns={columns} dataSource={data} rowKey="id" />
     </Card>
   );
 };

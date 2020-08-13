@@ -7,6 +7,7 @@ import { sortBy } from 'lodash';
 
 import { useCall } from './useCall';
 import { CurrencyLike, WithNull } from './types';
+import { useApi } from './useApi';
 
 export interface AuctionOverview {
   totalCollateral: { currency: CurrencyLike; balance: Fixed18 }[];
@@ -49,8 +50,22 @@ export interface CollateralAuction {
 }
 
 export const useCollateralAuctions = (): CollateralAuction[] => {
-  const collateralAuction = useCall<[StorageKey, Option<CollateralAuctionItem>][]>('query.auctionManager.collateralAuctions.entries');
+  const api = useApi()
+  const [cacheKey, setCacheKey] = useState('')
+  const collateralAuction = useCall<[StorageKey, Option<CollateralAuctionItem>][]>(
+    'query.auctionManager.collateralAuctions.entries',
+    [],
+    {
+      cacheKey
+    }
+  );
   const [result, setResult] = useState<CollateralAuction[]>([]);
+
+  useEffect(() => {
+    api.api.rpc.chain.subscribeNewHeads().subscribe((header) => {
+      setCacheKey(header.number.toString())
+    })
+  }, [api])
 
   useEffect(() => {
     if (!collateralAuction) return;

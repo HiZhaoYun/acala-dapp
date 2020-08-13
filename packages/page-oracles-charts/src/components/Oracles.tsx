@@ -14,8 +14,8 @@ const Oracles: FC = () => {
       const price = prices.find((i) => tokenEq(id, i.currency));
 
       return {
-        price: price,
-        currency: id
+        currency: id,
+        price: price
       };
     });
   }, [prices, loanCurrencies]);
@@ -23,9 +23,15 @@ const Oracles: FC = () => {
   return (
     <div className={classes.root}>
       {data.map((item) => (
-        <div className={classes.item} key={item.currency.toString()}>
+        <div
+          className={classes.item}
+          key={item.currency.toString()}
+        >
           <Statistic
-            title={<Token currency={item.currency} fullname={true} icon={true} />}
+            title={<Token currency={item.currency}
+              fullname={true}
+              icon={true}
+            />}
             value={item.price?.price.toString() || '--'}
           />
         </div>

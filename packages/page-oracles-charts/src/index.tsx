@@ -5,7 +5,7 @@ import Oracles from './components/Oracles';
 import PriceChart from './components/PriceChart';
 
 const PageDashboardHome: FC = () => {
-  const { loanCurrencies } = useConstants();
+  const oracleCurrency = ['DOT', 'XBTC', 'RENBTC'];
 
   return (
     <Page fullscreen>
@@ -18,10 +18,12 @@ const PageDashboardHome: FC = () => {
           <Grid item>
             <Page.Title title='Price Feeds' />
             <Tabs type='button'>
-              {loanCurrencies?.map((item: any) => {
+              {oracleCurrency.map((item: any) => {
                 return (
-                  <Tabs.Panel key={item.toString()} tab={item.toString()}>
-                    <PriceChart currency={item.toString()} />
+                  <Tabs.Panel key={item.toString()}
+                    tab={item}
+                  >
+                    <PriceChart currency={item} />
                   </Tabs.Panel>
                 );
               })}

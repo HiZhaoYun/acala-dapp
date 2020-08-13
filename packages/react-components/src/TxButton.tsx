@@ -73,7 +73,7 @@ export const TxButton: FC<PropsWithChildren<Props>> = ({
   ...other
 }) => {
   const { api } = useApi();
-  const { active } = useAccounts();
+  const { active, authRequired, setAuthRequired } = useAccounts();
   const [isSending, setIsSending] = useState<boolean>(false);
   const { refresh } = useHistory();
 
@@ -100,6 +100,9 @@ export const TxButton: FC<PropsWithChildren<Props>> = ({
 
     if (!(active && active.address)) {
       console.error('can not find available address');
+      if (!authRequired) {
+        setAuthRequired(true)
+      }
 
       return;
     }

@@ -14,7 +14,7 @@ import { getCurrencyIdFromName } from './utils';
 import classes from './BalanceInput.module.scss';
 import { CurrencyChangeFN } from './types';
 
-type BalanceInputSize = 'large' | 'middle' | 'small';
+type BalanceInputSize = 'large' | 'middle' | 'small' | 'mini';
 
 export interface BalanceInputProps extends BareProps {
   currencies?: (CurrencyId | string)[];
@@ -31,6 +31,7 @@ export interface BalanceInputProps extends BareProps {
   value?: number;
   showMaxBtn?: boolean;
   showIcon?: boolean;
+  showToken?: boolean;
   size?: BalanceInputSize;
   onMax?: () => void;
   border?: boolean;
@@ -57,6 +58,7 @@ export const BalanceInput: FC<BalanceInputProps> = ({
   placeholder,
   showIcon = true,
   showMaxBtn = false,
+  showToken = true,
   size = 'large',
   token,
   tokenPosition = 'right',
@@ -72,6 +74,8 @@ export const BalanceInput: FC<BalanceInputProps> = ({
   }, [api, token]);
 
   const renderToken = useCallback((): ReactNode => {
+    if (!showToken) return null;
+
     return (
       <Condition
         condition={enableTokenSelect}
@@ -119,6 +123,7 @@ export const BalanceInput: FC<BalanceInputProps> = ({
     {
       [classes.disabled]: disabled,
       [classes.border]: border,
+      [classes.noToken]: !showToken,
       [classes.error]: !!error,
       [classes.focused]: focused,
       [classes.showMax]: showMaxBtn,

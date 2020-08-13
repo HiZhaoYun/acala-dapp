@@ -1,19 +1,13 @@
-import {
-  BalanceInput,
-  FormatAddress,
-  FormatBalance,
-  numToFixed18Inner,
-  Token,
-  TxButton
-} from '@acala-dapp/react-components';
-import { useCollateralAuctions, useCall, useConstants } from '@acala-dapp/react-hooks';
+import { BalanceInput, FormatAddress, FormatBalance, numToFixed18Inner, TxButton } from '@acala-dapp/react-components';
+import { useCall, useCollateralAuctions, useConstants } from '@acala-dapp/react-hooks';
 import { Card } from '@acala-dapp/ui-components';
+import { convertToFixed18, Fixed18 } from '@acala-network/app-util';
 import { AuctionInfo } from '@open-web3/orml-types/interfaces';
 import { Option } from '@polkadot/types';
 import { Table } from 'antd';
 import React, { FC, useMemo, useState } from 'react';
 
-import classes from './CollateralAuctionList.module.scss'
+import classes from './CollateralAuctionList.module.scss';
 
 const AuctionLastBid: FC<{ id: string }> = ({ id }) => {
   const info = useCall<Option<AuctionInfo>>('query.auction.auctions', [id]);
@@ -36,13 +30,70 @@ const AuctionLastBid: FC<{ id: string }> = ({ id }) => {
   );
 };
 
+const AuctionPayment: FC<{ id: string; target: Fixed18 }> = ({ id, target }) => {
+  const info = useCall<Option<AuctionInfo>>('query.auction.auctions', [id]);
+
+  if (info) {
+    console.log('!!', info.toHuman());
+  }
+
+  const bid = info?.unwrapOr(null)?.bid?.unwrapOr(null);
+
+  if (!bid) {
+    return <span>{target.toString()}</span>;
+  }
+
+  return (
+    <span>
+      {convertToFixed18(bid)
+        .min(target)
+        .toString()}
+    </span>
+  );
+};
+
+const AuctionReceiveCollateral: FC<{ id: string; target: Fixed18; amount: Fixed18 }> = ({ id, target, amount }) => {
+  const info = useCall<Option<AuctionInfo>>('query.auction.auctions', [id]);
+
+  if (info) {
+    console.log('!!', info.toHuman());
+  }
+
+  const bid = info?.unwrapOr(null)?.bid?.unwrapOr(null);
+
+  if (!bid) {
+    return <span>{amount.toString()}</span>;
+  }
+
+  const lastBid = convertToFixed18(bid);
+
+  return (
+    <span>
+      {lastBid.isGreaterThan(amount)
+        ? target
+            .div(lastBid)
+            .mul(amount)
+            .toString()
+        : amount.toString()}
+    </span>
+  );
+};
+
 const AuctionMakeBid: FC<{ id: string }> = ({ id }) => {
   const [val, setVal] = useState(0);
 
   return (
     <div className={classes.auctionMakeBid}>
-      <BalanceInput className={classes.auctionMakeBidInput} onChange={setVal} showIcon={false} size='small' token='AUSD' value={val} />
-      <TxButton disabled={val === 0} method='bid' params={[id, numToFixed18Inner(val)]} section='auction'>
+      <BalanceInput
+        className={classes.auctionMakeBidInput}
+        showToken={false}
+        onChange={setVal}
+        showIcon={false}
+        size='mini'
+        token='AUSD'
+        value={val}
+      />
+      <TxButton className={classes.auctionMakeBidButton} size="small" disabled={val === 0} method='bid' params={[id, numToFixed18Inner(val)]} section='auction'>
         Bid
       </TxButton>
     </div>
@@ -65,7 +116,7 @@ const CollateralAuctionList: FC = () => {
       {
         key: 'owner',
         /* eslint-disable-next-line react/display-name */
-        render: (item: any): JSX.Element => <FormatAddress address={item.owner} withCopy />,
+        render: (item: any): JSX.Element => <FormatAddress address={item.owner} withCopy withMiniAddress />,
         title: 'owner'
       },
       {
@@ -86,6 +137,22 @@ const CollateralAuctionList: FC = () => {
         title: 'Start Block'
       },
       {
+        key: 'payment',
+        render: (item: any): JSX.Element => <AuctionPayment id={item.id} target={convertToFixed18(item.target)} />,
+        title: 'Payment'
+      },
+      {
+        key: 'receive_collateral',
+        render: (item: any): JSX.Element => (
+          <AuctionReceiveCollateral
+            id={item.id}
+            target={convertToFixed18(item.target)}
+            amount={convertToFixed18(item.amount)}
+          />
+        ),
+        title: 'Receive Collateral'
+      },
+      {
         key: 'bidder',
         /* eslint-disable-next-line react/display-name */
         render: (item: any): JSX.Element => <AuctionLastBid id={item.id} />,
@@ -102,7 +169,7 @@ const CollateralAuctionList: FC = () => {
 
   return (
     <Card header='Collateral Auction' padding={false}>
-      <Table columns={columns} dataSource={data} rowKey="id" />
+      <Table columns={columns} dataSource={data} rowKey='id' />
     </Card>
   );
 };

@@ -10,6 +10,7 @@ import { formatAddress } from '../utils';
 interface Props extends BareProps {
   address: string;
   withFullAddress?: boolean;
+  withMiniAddress?: boolean;
   withCopy?: boolean;
   withIcon?: boolean;
   iconWidth?: number;
@@ -21,6 +22,7 @@ export const FormatAddress: FC<Props> = memo(({
   iconWidth = 22,
   withCopy = false,
   withFullAddress = false,
+  withMiniAddress = false,
   withIcon = false
 }) => {
   const _address = useMemo<string>((): string => {
@@ -30,7 +32,7 @@ export const FormatAddress: FC<Props> = memo(({
 
     if (!address) return '';
 
-    return formatAddress(address);
+    return formatAddress(address, withMiniAddress);
   }, [address, withFullAddress]);
 
   const renderInner = useCallback(() => {

@@ -60,7 +60,7 @@ export const formatHash = (hash: string, name = true): string => {
   return hash.replace(/(\w{6})\w*?(\w{6}$)/, '$1......$2');
 };
 
-export const formatAddress = (address: string): string => {
+export const formatAddress = (address: string, isMini?: boolean): string => {
   if (address === LAMINAR_WATCHER_ADDRESS || address === LAMINAR_SENDER_ADDRESS) {
     return 'Laminar';
   }
@@ -69,7 +69,9 @@ export const formatAddress = (address: string): string => {
     return 'Faucet';
   }
 
-  return address.replace(/(\w{6})\w*?(\w{6}$)/, '$1......$2');
+  return !isMini
+    ? address.replace(/(\w{6})\w*?(\w{6}$)/, '$1......$2')
+    : address.replace(/(\w{6})\w*$/, '$1...');
 };
 
 export const formatBalance = (balance: Fixed18 | Codec | number | string | undefined): Fixed18 => {

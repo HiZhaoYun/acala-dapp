@@ -45,7 +45,7 @@ const AuctionPayment: FC<{ id: string; target: Fixed18 }> = ({ id, target }) => 
 
   return (
     <span>
-      {convertToFixed18(bid)
+      {convertToFixed18(bid[1])
         .min(target)
         .toString()}
     </span>
@@ -65,7 +65,7 @@ const AuctionReceiveCollateral: FC<{ id: string; target: Fixed18; amount: Fixed1
     return <span>{amount.toString()}</span>;
   }
 
-  const lastBid = convertToFixed18(bid);
+  const lastBid = convertToFixed18(bid[1]);
 
   return (
     <span>
@@ -93,7 +93,14 @@ const AuctionMakeBid: FC<{ id: string }> = ({ id }) => {
         token='AUSD'
         value={val}
       />
-      <TxButton className={classes.auctionMakeBidButton} size="small" disabled={val === 0} method='bid' params={[id, numToFixed18Inner(val)]} section='auction'>
+      <TxButton
+        className={classes.auctionMakeBidButton}
+        size='small'
+        disabled={val === 0}
+        method='bid'
+        params={[id, numToFixed18Inner(val)]}
+        section='auction'
+      >
         Bid
       </TxButton>
     </div>

@@ -73,7 +73,7 @@ export const useCollateralAuctions = (): CollateralAuction[] => {
       return {
         amount: convertToFixed18(item[1].unwrap().amount || 0),
         currency: item[1].unwrap().currencyId?.toString(),
-        id: (item[0].toHuman() as string[])[0],
+        id: (item[0].toHuman() as string[])[0].replace(/[^\d]/, ''),
         owner: (item[1].unwrap() as any).refundRecipient.toString(),
         startTime: item[1].unwrap().startTime.toNumber(),
         target: convertToFixed18(item[1].unwrap().target || 0)

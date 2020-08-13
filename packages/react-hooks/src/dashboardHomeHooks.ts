@@ -16,7 +16,7 @@ type HooksReturnType = Record<string,
 const useHistory = (sql: string): any => {
   const data = useRequest(() => ({
     method: 'GET',
-    url: `http://39.99.168.67:8086/query?q=${sql}`
+    url: `https://pulse.acala.network/api/query?q=${sql}`
   }));
 
   const history = useMemo(() => {

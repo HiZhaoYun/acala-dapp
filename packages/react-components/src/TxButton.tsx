@@ -15,6 +15,7 @@ interface Props extends ButtonProps {
   section: string;
   method: string;
   params: any[];
+  beforSend?: () => void;
   onSuccess?: () => void;
   onFailed?: () => void;
   onFinally?: () => void;
@@ -60,6 +61,7 @@ function extractEvents (api: ApiRx, result: SubmittableResult): void {
 }
 
 export const TxButton: FC<PropsWithChildren<Props>> = ({
+  beforSend,
   children,
   className,
   disabled,
@@ -100,11 +102,16 @@ export const TxButton: FC<PropsWithChildren<Props>> = ({
 
     if (!(active && active.address)) {
       console.error('can not find available address');
+
       if (!authRequired) {
-        setAuthRequired(true)
+        setAuthRequired(true);
       }
 
       return;
+    }
+
+    if (beforSend) {
+      beforSend();
     }
 
     // lock btn click

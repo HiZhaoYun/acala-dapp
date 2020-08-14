@@ -7,8 +7,8 @@ import { EmergencyShutdownContext } from './EmergencyShutdownProvider';
 import classes from './Success.module.scss';
 
 export const Success: FC = () => {
-  const { savedCollateral } = useContext(EmergencyShutdownContext);
-  const collateralsLength = useMemo(() => Object.keys(savedCollateral).length, [savedCollateral]);
+  const { collateralRef } = useContext(EmergencyShutdownContext);
+  const collateralsLength = useMemo(() => Object.keys(collateralRef).length, [collateralRef]);
 
   return (
     <div className={classes.root}>
@@ -17,10 +17,10 @@ export const Success: FC = () => {
       <p className={classes.detail}>
         You have received
         {
-          Object.keys(savedCollateral).map((currency, index) => {
+          Object.keys(collateralRef).map((currency, index) => {
             return [
               <FormatBalance
-                balance={savedCollateral[currency]}
+                balance={collateralRef[currency]}
                 className={classes.token}
                 currency={currency}
                 key={`reclaim-success-${currency}`}

@@ -32,10 +32,12 @@ const OverviewDataDisplay: FC<OverviewDataDisplayProps> = ({ data, title }) => {
     });
 
     data.amountDetail.forEach((data, currency): void => {
+      const percent = data.div(_total);
+
       result.push({
         count: data.toNumber(2, 3),
         item: getTokenName(currency),
-        percent: data.div(_total).toNumber(2, 3)
+        percent: percent.isFinity() ? percent.toNumber(2, 3) : 0
       });
     });
 

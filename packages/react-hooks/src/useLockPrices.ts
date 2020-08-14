@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { combineLatest } from 'rxjs';
+import { remove } from 'lodash';
 import { Option } from '@polkadot/types';
 
 import { Price } from '@open-web3/orml-types/interfaces';
@@ -8,7 +9,6 @@ import { convertToFixed18, Fixed18 } from '@acala-network/app-util';
 import { tokenEq } from '@acala-dapp/react-components';
 
 import { useApi } from './useApi';
-import { useConstants } from './useConstants';
 import { useStakingPool } from './useStakingPool';
 import { CurrencyLike } from './types';
 
@@ -16,7 +16,7 @@ export type LockedPricesResult = { [k: string]: Fixed18 };
 
 export function useLockPrices (): LockedPricesResult {
   const { api } = useApi();
-  const { loanCurrencies } = useConstants();
+  const loanCurrencies = ['DOT', 'XBTC', 'RENBTC'];
   const [prices, setPrices] = useState<LockedPricesResult>({});
   const { stakingPool, stakingPoolHelper } = useStakingPool();
 
@@ -43,7 +43,7 @@ export function useLockPrices (): LockedPricesResult {
       });
 
     return (): void => subscriber.unsubscribe();
-  }, [api, loanCurrencies, stakingPool, stakingPoolHelper]);
+  }, [api, stakingPool, stakingPoolHelper]);
 
   return prices;
 }

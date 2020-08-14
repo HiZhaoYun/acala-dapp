@@ -52,15 +52,28 @@ export const ReclaimModal: FC<ReclaimModalProps> = ({
 }) => {
   const { stableCurrency } = useConstants();
   const stableBalance = useBalance(stableCurrency);
-  const params = useMemo(() => {
-    return [stableBalance.innerToString()];
-  }, [stableBalance]);
+
   const { active } = useAccounts();
-  const { collaterals, setStep } = useContext(EmergencyShutdownContext);
-  const reclaimSsuccess = useCallback(() => {
+  const { collaterals, setStep, updateCollateralRef } = useContext(EmergencyShutdownContext);
+
+  const reclaimSuccess = useCallback(() => {
     onClose();
     setStep('success');
   }, [setStep, onClose]);
+
+  const params = useMemo(() => {
+    return [stableBalance.innerToString()];
+  }, [stableBalance]);
+
+  const beforeSend = useCallback(() => {
+    const copyCollaterals = Object.keys(collaterals).reduce((acc, cur) => {
+      acc[cur] = Fixed18.fromNatural(collaterals[cur].toFixed(18));
+
+      return acc;
+    }, {} as Record<string, Fixed18>);
+
+    updateCollateralRef(copyCollaterals);
+  }, [collaterals, updateCollateralRef]);
 
   if (!active) return null;
 
@@ -75,8 +88,9 @@ export const ReclaimModal: FC<ReclaimModalProps> = ({
               Close
           </Button>
           <TxButton
+            beforSend={beforeSend}
             method='refundCollaterals'
-            onSuccess={reclaimSsuccess}
+            onSuccess={reclaimSuccess}
             params={params}
             section='emergencyShutdown'
             size='small'

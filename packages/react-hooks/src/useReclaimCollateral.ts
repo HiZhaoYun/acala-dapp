@@ -6,6 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { useCall } from './useCall';
 import { WithNull } from './types';
 import { useTreasuryOverview } from './treasuryHooks';
+import { throttle } from 'lodash';
 
 type ReclaimCollateralAmount = Record<string, Fixed18>;
 
@@ -29,7 +30,7 @@ export const useReclaimCollateral = (): ReclaimCollateralData => {
     }, {} as ReclaimCollateralAmount);
   }, [treasury]);
 
-  const calcCanReceive = useCallback((amount: Fixed18): ReclaimCollateralAmount => {
+  const calcCanReceive = useCallback(throttle((amount: Fixed18): ReclaimCollateralAmount => {
     if (!totalIssuance || !collaterals) {
       return {};
     }
@@ -41,7 +42,7 @@ export const useReclaimCollateral = (): ReclaimCollateralData => {
 
       return acc;
     }, {} as ReclaimCollateralAmount);
-  }, [totalIssuance, collaterals]);
+  }, 1000), [totalIssuance, collaterals]);
 
   return {
     calcCanReceive,

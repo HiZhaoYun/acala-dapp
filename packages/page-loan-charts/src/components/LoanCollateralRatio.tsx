@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-
+import { throttle } from 'lodash';
 import { Fixed18 } from '@acala-network/app-util';
 
 import { Chart, Interval, Tooltip } from 'bizcharts';
@@ -13,58 +13,56 @@ const ONE_HUNDRED = Fixed18.fromNatural(100);
 export const LoanCollateralRatio: FC = () => {
   const totalCollateral = useTotalCollatearl();
   const totalDebit = useTotalDebit();
-  const data = useMemo(() => {
+  const data = useMemo(throttle(() => {
     if (!totalDebit || !totalCollateral) return [];
     const result = [];
+    const totalRatio = totalCollateral.amount.div(totalDebit.amount).mul(ONE_HUNDRED);
 
     result.push({
       currency: 'System',
-      ratio: (totalCollateral.amount.div(totalDebit.amount).mul(ONE_HUNDRED)).toNumber(2, 3)
+      ratio: totalRatio.isFinity() ? totalRatio.toNumber(2, 3) : 0
     });
 
     totalCollateral.amountDetail.forEach((item, currency) => {
       const debit = totalDebit.amountDetail.get(currency) || Fixed18.ZERO;
+      const ratio = item.div(debit).mul(ONE_HUNDRED);
 
       result.push({
         currency: getTokenName(currency),
-        ratio: item.div(debit).mul(ONE_HUNDRED).toNumber(2, 3)
+        ratio: ratio.isFinity() ? ratio.toNumber(2, 3) : 0
       });
     });
 
     return result;
-  }, [totalCollateral, totalDebit]);
+  }, 1000), [totalCollateral, totalDebit]);
 
-  const _data = useMemorized(data);
-
-  return useMemo(() => {
-    return (
-      <Card
-        header='Collateral Ratio'
+  return (
+    <Card
+      header='Collateral Ratio'
+    >
+      <Chart
+        animation={false}
+        autoFit
+        data={data}
+        height={400}
+        interactions={['active-region']}
+        padding={[30, 30, 60, 30]}
       >
-        <Chart
-          animation={false}
-          autoFit
-          data={_data}
-          height={400}
-          interactions={['active-region']}
-          padding={[30, 30, 60, 30]}
-        >
-          <Interval
-            color={['currency', (item: string): string => getTokenColor(item)]}
-            label={['ratio', {
-              content: (data: any): string => {
-                return `${data.ratio}%`;
-              }
-            }]}
-            position='currency*ratio'
-            tooltip={['ratio', (ratio) => ({
-              name: 'Collateral Ratio',
-              value: `${(ratio * 100).toFixed(2)} %`
-            })]}
-          />
-          <Tooltip shared />
-        </Chart>
-      </Card>
-    );
-  }, [_data]);
+        <Interval
+          color={['currency', (item: string): string => getTokenColor(item)]}
+          label={['ratio', {
+            content: (data: any): string => {
+              return `${data.ratio}%`;
+            }
+          }]}
+          position='currency*ratio'
+          tooltip={['ratio', (ratio) => ({
+            name: 'Collateral Ratio',
+            value: `${(ratio * 100).toFixed(2)} %`
+          })]}
+        />
+        <Tooltip shared />
+      </Chart>
+    </Card>
+  );
 };

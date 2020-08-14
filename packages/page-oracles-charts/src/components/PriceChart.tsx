@@ -14,8 +14,8 @@ const PriceChart: FC<{ currency: string }> = ({ currency }) => {
 
     return _data?.[0].values.map((item: any) => {
       return {
-        value: item[1],
-        time: dayjs(item[0]).format('YYYY/MM/DD HH:mm')
+        time: dayjs(item[0]).format('YYYY/MM/DD HH:mm'),
+        value: item[1]
       };
     });
   }, [_data]);

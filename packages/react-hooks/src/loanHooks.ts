@@ -12,7 +12,7 @@ import { usePrice, useAllPrices } from './priceHooks';
 import { filterEmptyLoan } from './utils';
 import { useApi } from './useApi';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, throttleTime } from 'rxjs/operators';
 import { tokenEq } from '@acala-dapp/react-components';
 
 /**
@@ -49,7 +49,7 @@ export const useAllLoansType = (): Record<string, DerivedLoanType> | undefined =
   useEffect(() => {
     const subscriber = combineLatest(loanCurrencies.map((currency) => {
       return (api.derive as any).loan.loanType(currency) as Observable<DerivedLoanType>;
-    })).subscribe((result) => {
+    })).pipe(throttleTime(1000)).subscribe((result) => {
       setData(result.reduce((acc, cur, index) => {
         const currency = loanCurrencies[index];
 
@@ -164,7 +164,7 @@ export const useTotalDebit = (): TotalDebitOrCollateralData | null => {
       loanCurrencies.map((currency: CurrencyLike): Observable<[Fixed18, Fixed18, CurrencyLike]> => api.queryMulti<[Balance, Rate]>([
         [api.query.loans.totalDebits, currency],
         [api.query.cdpEngine.debitExchangeRate, currency]
-      ]).pipe(map((result): [Fixed18, Fixed18, CurrencyLike] => [convertToFixed18(result[0]), convertToFixed18(result[1]), currency]))))
+      ]).pipe(throttleTime(1000), map((result): [Fixed18, Fixed18, CurrencyLike] => [convertToFixed18(result[0]), convertToFixed18(result[1]), currency]))))
       .subscribe((_result) => {
         /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
         const balanceDetail = new Map(_result.map(([debit, rate, currency]): [CurrencyLike, Fixed18] => {
@@ -205,7 +205,7 @@ export const useTotalCollatearl = (): TotalDebitOrCollateralData | null => {
           map((result): [CurrencyLike, Fixed18] => [currency, convertToFixed18(result)])
         );
       })
-    ).subscribe((_result) => {
+    ).pipe(throttleTime(1000)).subscribe((_result) => {
       const balanceDetail = new Map(_result);
 
       const amountDetail = new Map(_result.map(([currency, collateral]) => {

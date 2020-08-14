@@ -1,5 +1,4 @@
-import React, { createContext, FC, PropsWithChildren, useState, useMemo, useRef, useEffect } from 'react';
-import { cloneDeep } from 'lodash';
+import React, { createContext, FC, PropsWithChildren, useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Fixed18 } from '@acala-network/app-util';
 
 import { useLockPrices, LockedPricesResult } from '@acala-dapp/react-hooks/useLockPrices';
@@ -16,7 +15,8 @@ export interface EmergencyShutdownContextData {
   canReclaim: boolean;
   setCanReclaim: (flag: boolean) => void;
   collaterals: Record<string, Fixed18>;
-  savedCollateral: Record<string, Fixed18>;
+  collateralRef: Record<string, Fixed18>;
+  updateCollateralRef: (data: Record<string, Fixed18>) => void;
   reclaimBalanceIsEmpty: boolean;
 }
 
@@ -43,14 +43,6 @@ export const EmergencyShutdownProvider: FC<PropsWithChildren<unknown>> = ({ chil
 
     const result = calcCanReceive(stableCoinBalance);
 
-    const resultIsEmpty = Object.keys(result).reduce((acc, cur) => {
-      return acc && (result[cur].isNaN() || result[cur].isZero());
-    }, true);
-
-    if (!resultIsEmpty) {
-      collateralsRef.current = cloneDeep(result);
-    }
-
     return result;
   }, [calcCanReceive, stableCoinBalance]);
 
@@ -58,18 +50,23 @@ export const EmergencyShutdownProvider: FC<PropsWithChildren<unknown>> = ({ chil
     if (stableCoinBalance.isNaN() || stableCoinBalance.isZero()) {
       setCanReclaim(false);
     }
-  }, [stableCoinBalance]);
+  }, [calcCanReceive, stableCoinBalance]);
+
+  const updateCollateralRef = useCallback((data: Record<string, Fixed18>) => {
+    collateralsRef.current = data;
+  }, []);
 
   return (
     <EmergencyShutdownContext.Provider value={{
       canReclaim,
+      collateralRef: collateralsRef.current,
       collaterals,
       lockedPrices,
       reclaimBalanceIsEmpty,
-      savedCollateral: collateralsRef.current,
       setCanReclaim,
       setStep,
-      step
+      step,
+      updateCollateralRef
     }}>
       {children}
     </EmergencyShutdownContext.Provider>

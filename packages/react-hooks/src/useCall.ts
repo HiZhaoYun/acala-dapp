@@ -7,7 +7,8 @@ import { globalStoreContext } from '@acala-dapp/react-environment';
 import { useIsAppReady } from './useIsAppReady';
 import { useApi } from './useApi';
 import { CallParams } from './types';
-import { Observable } from 'rxjs';
+import { Observable, interval } from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
 
 class Tracker {
   private trackerList: {[k in string]: { refCount: number; subscriber: Observable<unknown> }}
@@ -33,7 +34,7 @@ class Tracker {
       return;
     }
 
-    const subscriber = fn(...params).subscribe({
+    const subscriber = fn(...params).pipe(throttleTime(1000)).subscribe({
       next: (result: any) => {
         updateFn(key, result);
       }

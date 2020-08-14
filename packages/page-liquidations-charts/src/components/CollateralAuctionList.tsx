@@ -69,7 +69,7 @@ const AuctionReceiveCollateral: FC<{ id: string; target: Fixed18; amount: Fixed1
 
   return (
     <span>
-      {lastBid.isGreaterThan(amount)
+      {lastBid.isGreaterThan(target)
         ? target
             .div(lastBid)
             .mul(amount)
